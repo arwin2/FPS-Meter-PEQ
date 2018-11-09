@@ -6,16 +6,23 @@
 #include <interrupt.h>
 #include <Arduino.h>
 
-uint8_t displayNumber = 1;
+uint8_t displayNumber = 5;
 #define displayFPS 1
 #define displayROF 2
+#define displayFPSp 3
+#define displayROFp 4
+#define displayAmmo 5
 
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
 
-float FPS;
+float FPS = 0;
+int FPSm;
 int ROF;
 char msg_id;
+
+uint16_t maxAmmo = 120;
+uint16_t currentAmmo = 120;
 
 int main(void) {
 	init();
@@ -30,6 +37,8 @@ int main(void) {
 
 	display.clearDisplay();
 
+	displayMenu(displayNumber);
+
 	display.display();
 
 	while (true) {
@@ -39,6 +48,7 @@ int main(void) {
 				FPS = Serial.parseFloat();
 				if (FPS > 0) {
 					Serial.println(FPS);
+					if(currentAmmo > 0) currentAmmo--;
 					displayMenu(displayNumber);
 				}
 				break;
@@ -58,13 +68,36 @@ void displayMenu(uint8_t i) {
 	display.setTextColor(WHITE);
 	switch (i) {
 	case displayFPS:
+		FPSm = FPS;
 		display.print("FPS");
+		if (FPSm < 1000) {
+			display.setCursor(60, 10);
+		} else {
+			display.setCursor(20, 10);
+		}
+		display.setTextSize(3);
+		display.print(FPSm);
+		break;
+	case displayROF:
+		display.print("ROF");
+		display.setCursor(20, 10);
+		break;
+	case displayFPSp:
+		display.print("FPS+");
 		display.setCursor(20, 10);
 		display.setTextSize(3);
 		display.print(FPS);
 		break;
-	case displayROF:
-		break;
+	case displayAmmo:
+		display.print("AMMO");
+		display.setCursor(100, 25);
+		display.setTextSize(1);
+		display.print("/");
+		display.print(maxAmmo);
+		display.setCursor(40, 10);
+		display.setTextSize(3);
+		display.print(currentAmmo);
+
 	}
 	display.display();
 }
