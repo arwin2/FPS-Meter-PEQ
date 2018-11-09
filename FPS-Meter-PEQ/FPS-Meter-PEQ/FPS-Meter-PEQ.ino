@@ -6,7 +6,7 @@
 #include <interrupt.h>
 #include <Arduino.h>
 
-uint8_t displayNumber = 2;
+uint8_t displayNumber = 5;
 #define displayFPS 1
 #define displayROF 2
 #define displayFPSp 3
@@ -81,8 +81,6 @@ void displayMenu(uint8_t i) {
 	case displayROF:
 		display.print("ROF");
 		display.setCursor(20, 10);
-		display.setTextSize(3);
-		display.print(ROF);
 		break;
 	case displayFPSp:
 		display.print("FPS+");
