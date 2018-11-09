@@ -17,4 +17,9 @@
   <ItemGroup>
     <None Include="FPS-Meter-PEQ.ino" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="__vm\.FPS-Meter-PEQ.vsarduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

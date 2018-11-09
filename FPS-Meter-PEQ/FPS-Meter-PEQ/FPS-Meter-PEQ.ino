@@ -6,8 +6,16 @@
 #include <interrupt.h>
 #include <Arduino.h>
 
+uint8_t displayNumber = 1;
+#define displayFPS 1
+#define displayROF 2
+
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
+
+float FPS;
+int ROF;
+char msg_id;
 
 int main(void) {
 	init();
@@ -25,10 +33,40 @@ int main(void) {
 	display.display();
 
 	while (true) {
-		if (Serial.available() >= 1) {
-			Serial.println(BIN, Serial.read());
+		if (Serial.available() > 0) {
+			switch (Serial.read()) {
+			case 'F':
+				FPS = Serial.parseFloat();
+				if (FPS > 0) {
+					Serial.println(FPS);
+					displayMenu(displayNumber);
+				}
+				break;
+			case 'R':
+				ROF = Serial.parseInt();
+				Serial.println(ROF);
+				break;
+			}
 		}
 	}
+}
+
+void displayMenu(uint8_t i) {
+	display.clearDisplay();
+	display.setCursor(0, 0);
+	display.setTextSize(1);
+	display.setTextColor(WHITE);
+	switch (i) {
+	case displayFPS:
+		display.print("FPS");
+		display.setCursor(20, 10);
+		display.setTextSize(3);
+		display.print(FPS);
+		break;
+	case displayROF:
+		break;
+	}
+	display.display();
 }
 
 void setup_IO() {
@@ -60,3 +98,21 @@ ISR(INT0_vect) {
 ISR(INT1_vect) {
 	
 }
+
+
+
+
+/*if (Serial.read() == 'F') {
+	for (uint8_t i = 0; i < 6; i++) {
+		FPS[i] = Serial.read();
+	}
+	for (uint8_t i = 0; i < 6; i++) {
+		Serial.print(FPS[i]);
+	}
+	Serial.println();
+}
+else if (Serial.read() == 'R') {
+	for (uint8_t i = 0; i < 3; i++) {
+		ROF[i] = Serial.read();
+	}
+}*/
